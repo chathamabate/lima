@@ -1,0 +1,31 @@
+; 8 bit Unsigned Integer Math Functions.
+
+; Add two uint8s.
+; Params:
+;   a - Addend 1.
+;   b - Addend 2.
+; Returns:
+;   a + b in register a.
+; Destroys:
+;   a.
+; add a, b
+
+; Subtract two uint8s.
+; Params:
+;   a - Number to be subtracted from.
+;   b - Number to subtract.
+; Returns:
+;   a - b in register a.
+; Destroys:
+;   a.
+; sub a, b
+
+; Multiply two uint8s
+; Params:
+;   b - Number 1.
+;   c - Number 2.
+; Returns:
+;   b * c in register bc.
+; Destroys:
+;   bc.
+; mlt bc

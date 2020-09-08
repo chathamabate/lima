@@ -1,0 +1,13 @@
+#include "startup.z80"
+
+Main:
+  call _homeup
+  call _ClrScrnFull
+
+  ld a, 'H'
+  call _PutC
+
+  call _GetKey
+  call _ClrScrnFull
+  res donePrgm, (iy+doneFlags)
+  ret 

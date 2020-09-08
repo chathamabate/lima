@@ -1,0 +1,9 @@
+#include "./ti84pce.inc"
+  .assume ADL=1
+  .org userMem-2
+  .db tExtTok, tAsm84CeCmp
+
+Set_Up:
+  jp Main ; Jump To Main function.
+
+#include "./data/uint8/math.z80"

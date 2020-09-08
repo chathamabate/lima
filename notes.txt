@@ -1,0 +1,20 @@
+TI 84 Compiler Notes :
+
+Goal :
+Create a compiler for a TI 84.
+There already exists a C compiler for a TI 84...
+What makes my compiler different/What's the point of this project?
+Well, I want to learn about compilers and programming languages.
+As well, as low level computing and machine code.
+In order to pull this off, I will need to hone my understanding of the
+TI-84 OS. 
+
+I think a future goal for this project would be to create my own low level 
+language... and then a higher level langauge on top of that for the TI-84.
+
+For example, making a functional language for the TI-84.
+This would separate my compiler from the current C compiler.
+
+Roadblocks :
+My current roadblocks include data types and arithmetic...
+Particularly for floating point numbers.
