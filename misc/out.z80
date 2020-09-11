@@ -26,20 +26,24 @@ _Out_Bin_Byte_Loop_End:
 ; Params:
 ;   e  - The byte to convert to a string.
 ;   hl - The address in memory to place the string. 
+; Returns:
+;   The null terminated binary string found in e located at hl.
+; Destroys:
+;   b, a, hl
 SOut_Bin_Byte:
-  ld b, 8
+  ld b, 8 ; Get ready for iterations.
 _SOut_Bin_Byte_Loop:
   rl e
 
-  ld a, $30
+  ld a, $30   ; Load '0' into a. 
   jr nc, _SOut_Bin_Byte_Loop_End
-  inc a
+  inc a       ; Switch a to '1'
 _SOut_Bin_Byte_Loop_End:
-  ld (hl), a
-  inc hl
+  ld (hl), a  ; Store character in memory.
+  inc hl      ; Advance pointer in memory.
   djnz _SOut_Bin_Byte_Loop
 
-  ld (hl), $00
+  ld (hl), $00  ; Load null character into memory.
   rl e
   ret 
 
