@@ -4,10 +4,18 @@ Main:
   call _homeup
   call _ClrScrnFull
 
-  ld a, 'H'
-  call _PutC
+  ld hl, _Mem
+  ld e, 3
+
+  call SOut_Bin_Byte
+
+  ld hl, _Mem
+  call _PutS
 
   call _GetKey
   call _ClrScrnFull
   res donePrgm, (iy+doneFlags)
   ret 
+
+_Mem: 
+  .db $00, $00, $00, $00, $00, $00, $00, $00, $00

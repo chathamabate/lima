@@ -1,0 +1,45 @@
+; Misc Output Functions.
+
+
+; Output a single byte in binary on the display.
+; Params:
+;   e - The byte to display.
+; Destroys:
+;   b, a.
+Out_Bin_Byte:
+  ld b, 8 ; Get ready for 8 iterations.
+_Out_Bin_Byte_Loop:
+  rl e    ; Rotate leading bit of e into carry.
+
+  ld a, $30 ; Load '0' into a.
+  jr nc, _Out_Bin_Byte_Loop_End
+  inc a     ; If carry flag is set, increment a.
+_Out_Bin_Byte_Loop_End:
+  call _PutC
+  djnz _Out_Bin_Byte_Loop
+  
+  rl e  ; Restore e.
+  ret 
+
+
+; Output a single byte in binary as a string in memory.
+; Params:
+;   e  - The byte to convert to a string.
+;   hl - The address in memory to place the string. 
+SOut_Bin_Byte:
+  ld b, 8
+_SOut_Bin_Byte_Loop:
+  rl e
+
+  ld a, $30
+  jr nc, _SOut_Bin_Byte_Loop_End
+  inc a
+_SOut_Bin_Byte_Loop_End:
+  ld (hl), a
+  inc hl
+  djnz _SOut_Bin_Byte_Loop
+
+  ld (hl), $00
+  rl e
+  ret 
+

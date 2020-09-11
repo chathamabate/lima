@@ -1,5 +1,26 @@
 ; 8 bit Unsigned Integer Math Functions.
 
+
+; Increment a uint8
+; Params:
+;   a - The number to increment.
+; Returns:
+;   a + 1 in register a.
+; Destroys:
+;   a.
+; inc a
+
+
+; Decrement a uint8
+; Params:
+;   a - The number to decrement.
+; Returns:
+;   a - 1 in register a.
+; Destroys:
+;   a.
+; dec a
+
+
 ; Add two uint8s.
 ; Params:
 ;   a - Addend 1.
@@ -9,6 +30,7 @@
 ; Destroys:
 ;   a.
 ; add a, b
+
 
 ; Subtract two uint8s.
 ; Params:
@@ -20,6 +42,7 @@
 ;   a.
 ; sub a, b
 
+
 ; Multiply two uint8s
 ; Params:
 ;   b - Number 1.
@@ -29,3 +52,5 @@
 ; Destroys:
 ;   bc.
 ; mlt bc
+
+

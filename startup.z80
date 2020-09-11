@@ -7,3 +7,4 @@ Set_Up:
   jp Main ; Jump To Main function.
 
 #include "./data/uint8/math.z80"
+#include "./misc/out.z80"
