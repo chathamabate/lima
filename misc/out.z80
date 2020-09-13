@@ -9,12 +9,7 @@
 Out_Bin_Byte:
   ld b, 8 ; Get ready for 8 iterations.
 _Out_Bin_Byte_Loop:
-  rl e    ; Rotate leading bit of e into carry.
-
-  ld a, $30 ; Load '0' into a.
-  jr nc, _Out_Bin_Byte_Loop_End
-  inc a     ; If carry flag is set, increment a.
-_Out_Bin_Byte_Loop_End:
+  call Leading_Bit_Char_Code
   call _PutC
   djnz _Out_Bin_Byte_Loop
   
@@ -33,17 +28,74 @@ _Out_Bin_Byte_Loop_End:
 SOut_Bin_Byte:
   ld b, 8 ; Get ready for iterations.
 _SOut_Bin_Byte_Loop:
-  rl e
-
-  ld a, $30   ; Load '0' into a. 
-  jr nc, _SOut_Bin_Byte_Loop_End
-  inc a       ; Switch a to '1'
-_SOut_Bin_Byte_Loop_End:
+  call Leading_Bit_Char_Code
   ld (hl), a  ; Store character in memory.
   inc hl      ; Advance pointer in memory.
   djnz _SOut_Bin_Byte_Loop
 
   ld (hl), $00  ; Load null character into memory.
-  rl e
+  rl e          ; Restore e.
   ret 
 
+
+; Calculate the character code of the leading bit of a byte.
+; Params:
+;   e - The byte to use.
+; Returns:
+;   The character code of the leading bit of e in a.
+; Destroys:
+;   a, e.
+;   NOTE, e is simply rotated left one bit, not entirely destroyed.
+Leading_Bit_Char_Code:
+  rl e
+  ld a, $30
+  ret nc  ; If the leading bit is a 0, return now.
+  inc a   ; Otherwise increment a, then return.
+  ret 
+
+
+; Output a single nyble in hexidecimal on the display.
+; Params:
+;   d - The byte to display the first nyble of.
+;       NOTE, this requires the 4 msb's of d to be 0.
+; Destroys:
+;   a.
+Out_Hex_Nyble:
+  call Hex_Nyble_Char_Code
+  call _PutC
+  ret 
+
+
+; Output a single nyble in hexidecimal in memory.
+; Params:
+;   d  -  The byte to store the nyble of.
+;         NOTE, this requires the 4 msb's of d to be 0.
+;   hl -  The place in memory to store the nyble's
+;         corresponding character code.
+; Returns:
+;   d's corresponding hexidecimal character stored at hl.
+; Destroys:
+;   a.
+SOut_Hex_Nyble:
+  call Hex_Nyble_Char_Code
+  ld (hl), a
+  ret 
+
+
+; Calcuate the character code of a nyble represented 
+; in hexidecimal.
+; Params:
+;   d - The nyble to calcualte the character code of.
+;       NOTE, this requires the 4 msb's of d to be 0.
+; Returns:
+;   d's corresponding character code in a.
+; Destroys:
+;   a.
+Hex_Nyble_Char_Code:
+  ld a, d ; Copy d over into c.
+  cp 10  ; Perform a - 10.
+  jr c, _Out_Hex_Nyble_Default
+  add a, $07  ; If a > 10, start by adding 7.
+_Out_Hex_Nyble_Default:
+  add a, $30  ; Always add $30 to character value.
+  ret 

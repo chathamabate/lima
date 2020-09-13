@@ -4,18 +4,18 @@ Main:
   call _homeup
   call _ClrScrnFull
 
-  ld hl, $010204
-  push hl
+  ld e, $0F
+  call Out_Bin_Byte
 
-  call Pop_Byte
-  call Out_Bin_Byte
   call _NewLine
-  call Pop_Byte
-  call Out_Bin_Byte
-  call _NewLine
-  call Pop_Byte
-  call Out_Bin_Byte
+
+  ld hl, _Mem
+  call SOut_Bin_Byte
+  ld hl, _Mem
+  call _PutS
 
   call _GetKey
   call _ClrScrnFull
   ret 
+
+_Mem: .db $00, $00, $00, $00, $00, $00, $00, $00, $01
