@@ -4,18 +4,15 @@ Main:
   call _homeup
   call _ClrScrnFull
 
-  ld e, $0F
-  call Out_Bin_Byte
+  ld e, $09
+  ld d, $03
 
-  call _NewLine
+  call Divide_Uint8
 
-  ld hl, _Mem
-  call SOut_Bin_Byte
-  ld hl, _Mem
-  call _PutS
-
+  call Out_Hex_Byte
+ 
   call _GetKey
   call _ClrScrnFull
   ret 
 
-_Mem: .db $00, $00, $00, $00, $00, $00, $00, $00, $01
+_Mem: .db $00, $00, $00

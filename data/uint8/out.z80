@@ -1,0 +1,78 @@
+; 8 bit unsigned integer output functions.
+
+
+; Display a uint8 in base 10.
+; Params:
+;   e - The unint8 to display.
+Out_Dec_Uint8:
+
+
+; Trim at most 2 leading zeros off the top of the stack.
+; Params:
+;   The top two bytes on the stack (Disregarding the return address)
+; Destroys:
+;   a, b, de, hl, sp.
+Trim_Dec_0s_Uint8:
+  pop de      ; Store return address.
+
+  ld hl, 0  
+  add hl, sp  ; Set hl to sp.
+
+  ld b, 2     ; Trim a max of 2 zeros.
+_Trim_Dec_0s_Uint8_Loop:
+  ld a, (hl)
+  cp 0
+  ; If the leading digit doesn't equal 0,
+  ; exit the loop.
+  jr nz, _Trim_Dec_0s_Uint8_End
+  inc hl      ; Otherwise, continue moving down the stack.
+  inc sp
+  djnz _Trim_Dec_0s_Uint8_Loop
+
+_Trim_Dec_0s_Uint8_End:
+  push de     ; Restore return address.
+  ret 
+
+
+; Push the decimal digits of a uint8 onto the stack.
+; Params:
+;   e - The uint8 to transformm to decimal.
+;   b - The number of divisions to run.
+; Returns:
+;   The 3 decimal digit values pushed onto the stack.
+;   NOTE, the most siginificant digits will be pushed last.
+;   $0A will be pushed first to indicate the start of the digits.
+; Destroys:
+;   a, b, de, hl, sp (EVERYTHING)
+Push_Dec_Digits:
+  pop hl
+  ld (__Push_Dec_Digits_Uint8_ret), hl
+
+  ld hl, 0
+  add hl, sp    ; Set hl to sp.
+
+  dec hl
+  dec sp        ; Move sp up the stack one byte.
+  ld (hl), $0A  ; Push terminating digit onto top of stack.
+
+  ld d, 10
+  ld b, 2       ; This loops should only run twice.
+_Push_Dec_Digits_Loop:
+  ld (__Push_Dec_Digits_bc), bc
+  call Divide_Uint8 ; a <- e % 10.
+  ld bc, (__Push_Dec_Digits_bc)
+
+  dec hl
+  dec sp
+  ld (hl), a  ; Push remainder onto the stack.
+  djnz _Push_Dec_Digits_Loop
+
+  dec hl
+  dec sp
+  ld (hl), e  ; Push final digit onto the stack.
+
+  ld hl, (__Push_Dec_Digits_ret)
+  push hl         ; Restore return address.
+  ret 
+__Push_Dec_Digits_bc:   .db $00, $00, $00
+__Push_Dec_Digits_ret:  .db $00, $00, $00

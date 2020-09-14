@@ -54,3 +54,28 @@
 ; mlt bc
 
 
+; Divide two uint8s
+; Params:
+;   e - The numerator.
+;   d - The divisor.
+; Returns:
+;   e / d in e.
+;   e % d in a.
+; Destroys:
+;   a, b, e
+Divide_Uint8:
+  ld b, 8 ; Prepare for 8 iterations.
+_Divide_Uint8_Loop:
+  sla e
+  rl a
+  cp d
+  jr c, _Divide_Uint8_Loop_End
+  sub d     ; Only subtract when a >= d.
+  set 0, e  ; Take note of the subtraction.
+_Divide_Uint8_Loop_End:
+  djnz _Divide_Uint8_Loop
+  ret 
+
+
+
+

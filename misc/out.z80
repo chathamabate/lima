@@ -54,13 +54,67 @@ Leading_Bit_Char_Code:
   ret 
 
 
+; Output a byte in hexideciaml on the display.
+; Params:
+;   e - The byte to output.
+; Destroys:
+;   a, b, d.
+Out_Hex_Byte:
+  ld b, 2     ; Prepare for 2 iterations.
+
+_Out_Hex_Byte_Loop:
+  call Rotate_Nyble_Cyclic
+  ld d, e
+  call Out_Hex_Least_Nyble
+  djnz _Out_Hex_Byte_Loop
+
+  ret
+
+
+; Output the null-terminated hex string of a byte in memory.
+; Params:
+;   e  - The byte to output.
+;   hl - The memory address of where to output the string.
+; Returns:
+;   The hex string represent e in memory at hl.
+; Destroys:
+;   a, b, d, hl
+SOut_Hex_Byte:
+  ld b, 2
+
+_SOut_Hex_Byte_Loop:
+  call Rotate_Nyble_Cyclic
+  ld d, e
+  call SOut_Hex_Least_Nyble
+  inc hl
+  djnz _SOut_Hex_Byte_Loop
+
+  ld (hl), $00
+  ret 
+
+
+; Rotate a byte about its nybles.
+; Params:
+;   e - The byte to rotate:
+; Returns:
+;   e rotated in e.
+; Destoys:
+;   e.
+Rotate_Nyble_Cyclic:
+  rlc e ; Perform 4 cyclic rotations.
+  rlc e
+  rlc e
+  rlc e
+  ret 
+
+
 ; Output a single nyble in hexidecimal on the display.
 ; Params:
-;   d - The byte to display the first nyble of.
-;       NOTE, this requires the 4 msb's of d to be 0.
+;   d - The byte to display the least nyble of.
 ; Destroys:
-;   a.
-Out_Hex_Nyble:
+;   a, d.
+Out_Hex_Least_Nyble:
+  call Mask_Least_Nyble
   call Hex_Nyble_Char_Code
   call _PutC
   ret 
@@ -69,16 +123,30 @@ Out_Hex_Nyble:
 ; Output a single nyble in hexidecimal in memory.
 ; Params:
 ;   d  -  The byte to store the nyble of.
-;         NOTE, this requires the 4 msb's of d to be 0.
 ;   hl -  The place in memory to store the nyble's
 ;         corresponding character code.
 ; Returns:
 ;   d's corresponding hexidecimal character stored at hl.
 ; Destroys:
-;   a.
-SOut_Hex_Nyble:
+;   a, d.
+SOut_Hex_Least_Nyble:
+  call Mask_Least_Nyble
   call Hex_Nyble_Char_Code
   ld (hl), a
+  ret 
+
+
+; Mask d to contain only its 4 lsb's.
+; Params:
+;   d - The byte to mask.
+; Returns:
+;   The lower nyble of d in d.
+; Destroys:
+;   a, d.
+Mask_Least_Nyble:
+  ld a, d
+  and $0F
+  ld d, a
   ret 
 
 

@@ -19,11 +19,29 @@ Push_Byte:
   ret 
 
 
+; Push the contents of register a onto the stack.
+; Params:
+;   a - The byte to push onto the stack.
+; Destroys:
+;   bc, hl, sp.
+Push_A:
+  pop bc      ; Store return address.
+  dec sp      ; Advance sp one byte up the stack.
+
+  ld hl, 0    ; Clear hl.
+  add hl, sp  ; Set hl to sp.
+
+  ld (hl), a  ; Put what is stored in a on the top of the stack.
+
+  push bc     ; Restore return address.
+  ret 
+
+
 ; Pop a byte off the top of the stack.
 ; Returns:
 ;   e - The byte on the top of the stack.
 ; Destroys:
-;   bc, hl, sp.
+;   e, bc, hl, sp.
 Pop_Byte:
   pop bc      ; Store return address.
 
@@ -35,3 +53,23 @@ Pop_Byte:
   inc sp      ; Move sp down the stack.
   push bc     ; Restore return address.
   ret 
+
+
+; Pop a byte of the stack into register a.
+; Returns:
+;   a - The byte on the top of the stack.
+; Destroys:
+;   a, bc, hl, sp.
+Pop_A:
+  pop bc      ; Store return address.
+
+  ld hl, 0
+  add hl, sp  ; Set hl to sp.
+
+  ld a, (hl)  ; Load top byte into e.
+
+  inc sp      ; Move sp down the stack.
+  push bc     ; Restore return address.
+  ret 
+
+
