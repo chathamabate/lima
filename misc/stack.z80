@@ -73,3 +73,25 @@ Pop_A:
   ret 
 
 
+; Trim all zeros off the top of the stack.
+; Destroys:
+;   a, de, hl, sp.
+Trim_0s:
+  pop de      ; Store return address.
+
+  ld hl, 0  
+  add hl, sp  ; Set hl to sp.
+
+_Trim_0s_Loop:
+  ld a, (hl)
+  cp 0
+  ; If the leading digit doesn't equal 0,
+  ; exit the loop.
+  jr nz, _Trim_0s_End
+  inc hl      ; Otherwise, continue moving down the stack.
+  inc sp
+  djnz _Trim_0s_Loop
+
+_Trim_0s_End:
+  push de     ; Restore return address.
+  ret 

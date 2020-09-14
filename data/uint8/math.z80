@@ -64,6 +64,7 @@
 ; Destroys:
 ;   a, b, e
 Divide_Uint8:
+  ld a, 0 ; Clear the remainder field.
   ld b, 8 ; Prepare for 8 iterations.
 _Divide_Uint8_Loop:
   sla e

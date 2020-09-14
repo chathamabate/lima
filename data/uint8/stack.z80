@@ -1,0 +1,70 @@
+; Stack functions for 8 bit unsigned integers.
+; Requires:
+;   misc/stack.z80
+;   data/uint8/math.z80
+
+
+; Push the decimal digits of a uint8 onto the top of teh stack.
+; Trim all leading zeros off the top of the stack.
+; Params:
+;   e - The unint8 to push onto the stack.
+; Returns:
+;   The decimal digits of e with no leading zeros on
+;   the top of the stack.
+; Destroys:
+;   a, b, de, hl, sp.
+Push_Dec_Uint8_Digits_Nonzero:
+  pop hl
+  ld (__Push_Dec_Uint8_Digits_Nonzero_ret), hl
+  call Push_Dec_Uint8_Digits
+
+  ld b, 2
+  call Trim_0s
+
+  ld hl, (__Push_Dec_Uint8_Digits_Nonzero_ret)
+  push hl
+  ret 
+__Push_Dec_Uint8_Digits_Nonzero_ret:  .db $00, $00, $00
+
+
+; Push the decimal digits of a uint8 onto the stack.
+; Params:
+;   e - The uint8 to transformm to decimal.
+; Returns:
+;   The 3 decimal digit values pushed onto the stack.
+;   NOTE, the most siginificant digits will be pushed last.
+;   $0A will be pushed first to indicate the start of the digits.
+; Destroys:
+;   a, b, de, hl, sp 
+Push_Dec_Uint8_Digits:
+  pop hl
+  ld (__Push_Dec_Uint8_Digits_ret), hl
+
+  ld hl, 0
+  add hl, sp    ; Set hl to sp.
+
+  dec hl
+  dec sp        ; Move sp up the stack one byte.
+  ld (hl), $0A  ; Push terminating digit onto top of stack.
+
+  ld d, 10
+  ld b, 2       ; This loops should only run twice.
+_Push_Dec_Uint8_Digits_Loop:
+  ld (__Push_Dec_Uint8_Digits_bc), bc
+  call Divide_Uint8 ; a <- e % 10.
+  ld bc, (__Push_Dec_Uint8_Digits_bc)
+
+  dec hl
+  dec sp
+  ld (hl), a  ; Push remainder onto the stack.
+  djnz _Push_Dec_Uint8_Digits_Loop
+
+  dec hl
+  dec sp
+  ld (hl), e  ; Push final digit onto the stack.
+
+  ld hl, (__Push_Dec_Uint8_Digits_ret)
+  push hl         ; Restore return address.
+  ret 
+__Push_Dec_Uint8_Digits_bc:   .db $00, $00, $00
+__Push_Dec_Uint8_Digits_ret:  .db $00, $00, $00

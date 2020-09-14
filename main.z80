@@ -4,12 +4,8 @@ Main:
   call _homeup
   call _ClrScrnFull
 
-  ld e, $09
-  ld d, $03
-
-  call Divide_Uint8
-
-  call Out_Hex_Byte
+  ld e, 10
+  call Out_Dec_Uint8
  
   call _GetKey
   call _ClrScrnFull
