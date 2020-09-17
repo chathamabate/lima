@@ -15,7 +15,7 @@ _Out_Bin_Byte_Loop:
   
   rl e  ; Restore e.
   ret 
-
+        
 
 ; Output a single byte in binary as a string in memory.
 ; Params:

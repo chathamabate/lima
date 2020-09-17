@@ -2,7 +2,7 @@
 ; Requires:
 ;   data/uint8/stack.z80
 
-
+              
 ; Output a uint8 in decimal format on the display.
 ; Params:
 ;   e - The decimal to display.
